@@ -1,0 +1,22 @@
+{
+  "workbench.colorCustomizations": {
+    "sideBar.foreground": "#bee4e4"
+  },
+  "cSpell.words": ["Asfand", "fileds", "Mgdtw", "virtuals"],
+  "cSpell.ignoreWords": [
+    "SENDIN",
+    "Sendgrid",
+    "destructure",
+    "fieldname",
+    "geomatery",
+    "kjsdkjfsd",
+    "mailgun",
+    "mapbox",
+    "mapboxgl",
+    "minlength",
+    "sendinblue",
+    "unhandelled",
+    "xvcj"
+  ],
+  "terminal.integrated.fontSize": 16
+}
