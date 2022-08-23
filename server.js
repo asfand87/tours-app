@@ -19,7 +19,7 @@ mongoose
   })
   .catch((e) => console.log(e));
 //port
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
 const host = "127.0.0.1";
 app.listen(port, host, () => {
   console.log(`App running on ${port}...`);
