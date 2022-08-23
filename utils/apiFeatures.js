@@ -20,7 +20,7 @@ class APIFeatures {
       // const sortBy = sort.replace(",", " ");
       // mongoose sort method is used for ascending - or de-ascending +
       const sortBy = sort.split(',').join(' ');
-      console.log(sortBy);
+      // console.log(sortBy);
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');

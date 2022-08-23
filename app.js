@@ -10,6 +10,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const compression = require("compression");
 const app = express();
 
 
@@ -85,7 +86,7 @@ app.use(hpp({
 }));
 
 
-
+app.use(compression());
 
 
 
