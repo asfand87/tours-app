@@ -14,7 +14,7 @@ const compression = require("compression");
 const app = express();
 
 
-
+app.enable("trust proxy");
 
 
 // defining our engine
