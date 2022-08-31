@@ -5,16 +5,14 @@ const jwt = require("jsonwebtoken");
 const { AppError } = require("../utils/appError");
 const Email = require("../utils/email");
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
     const token = signToken(user._id);
-
-    const cookieOptions = {
+    res.cookie("jwt", token, {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         // secure: true,
         httpOnly: true,
-    };
-    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-    res.cookie("jwt", token, cookieOptions);
+        secure: (req.secure || req.headers("x-forwarded-proto") === "https")
+    });
 
     // to hide the password from the json when we create user do the following. 
     // user is passed as an argument in the function (user, statusCode, res)
@@ -47,7 +45,7 @@ module.exports.signup = catchAsync(async (req, res, next) => {
     await newUser.save();
     const url = `${req.protocol}://${req.get('host')}/me`;
     await new Email(newUser, url).sendWelcome();
-    createSendToken(newUser, 201, res);
+    createSendToken(newUser, 201, req, res);
 });
 
 module.exports.login = catchAsync(async (req, res, next) => {
@@ -63,7 +61,7 @@ module.exports.login = catchAsync(async (req, res, next) => {
         return next(new AppError("Incorrect Email or Password!"), 401);
     }
     // 3) If every thing is ok, send token to client.
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 
 });
 module.exports.logOut = catchAsync(async (req, res, next) => {
@@ -124,7 +122,7 @@ module.exports.resetPassword = catchAsync(async (req, res, next) => {
     // 3) Update changedPasswordAt property for the user
     // HAVE DONE IT IN USER MODEL.
     // 4) Log the user in, send JWT to the client.
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 
 })
 
@@ -140,7 +138,7 @@ module.exports.updatePassword = catchAsync(async (req, res, next) => {
     user.passwordConfirm = req.body.passwordConfirm;
     await user.save();
     // 4) Log user in, send JWT 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 })
 
 
