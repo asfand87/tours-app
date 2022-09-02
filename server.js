@@ -29,3 +29,10 @@ app.listen(port, host, () => {
 process.on("unhandledRejection", err => {
   console.log(err.name, err.message);
 })
+
+process.on("SIGTERM", () => {
+  console.log("SIGTERM RECIEVED Shutting down gracefully");
+  server.close(() => {
+    console.log("process terminated!");
+  })
+})
