@@ -22,7 +22,7 @@ mongoose
 const port = process.env.PORT || 3000;
 // const host = "127.0.0.1";
 const host = "0.0.0.0";
-app.listen(port, host, () => {
+const server = app.listen(port, host, () => {
   console.log(`App running on ${port}...`);
 });
 
