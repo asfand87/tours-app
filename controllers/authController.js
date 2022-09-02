@@ -11,6 +11,7 @@ const createSendToken = (user, statusCode, req, res) => {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         // secure: true,
         httpOnly: true,
+        // A cookie with the Secure attribute is sent to the server only with an encrypted request over the HTTPS protocol, never with unsecured HTTP (except on localhost)
         secure: (req.secure || req.headers("x-forwarded-proto") === "https")
     });
 
