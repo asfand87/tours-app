@@ -12,7 +12,7 @@ const createSendToken = (user, statusCode, req, res) => {
         // secure: true,
         httpOnly: true,
         // A cookie with the Secure attribute is sent to the server only with an encrypted request over the HTTPS protocol, never with unsecured HTTP (except on localhost)
-        secure: (req.secure || req.headers("x-forwarded-proto") === "https")
+        secure: (req.secure || req.get("x-forwarded-proto") === "https")
     });
 
     // to hide the password from the json when we create user do the following. 

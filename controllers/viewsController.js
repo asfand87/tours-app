@@ -77,7 +77,6 @@ module.exports.getMyTours = async (req, res, next) => {
     const tourIDs = booking.map(el => el.tour);
     // where _ID matches tourIDs array.
     const tours = await Tour.find({ _id: { $in: tourIDs } });
-
     res.status(200).render("overview", {
         title: "My Tours",
         tours

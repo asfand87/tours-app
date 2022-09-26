@@ -16,7 +16,7 @@ router.get("/login", isLoggedIn, getLogin);
 // Me route 
 router.get("/Me", protect, getAccount);
 
-router.get("/My-Tours", protect, getMyTours);
+router.get("/My-Tours", protect, getMyTours, createBookingCheckout);
 
 router.post("/submit-user-data", protect, updateUserData);
 
