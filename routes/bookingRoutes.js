@@ -17,7 +17,7 @@ router.use(restrictTo("admin", "lead-guide"))
 
 router.route("/")
   .get(getAllBookings)
-  .post(createBooking)
+// .post(createBooking)
 
 
 router.route("/:id")
