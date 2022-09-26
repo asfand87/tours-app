@@ -10,8 +10,10 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+const { webhookCheckout } = require("./controllers/bookingController");
 const compression = require("compression");
 const app = express();
+const { } = require("./controllers/bookingController");
 
 
 app.enable("trust proxy");
@@ -73,6 +75,7 @@ const limiter = rateLimit({
 // each time we will make request to /api this limiter middleware will run
 app.use("/api", limiter);
 
+app.post("/webhook-checkout", express.raw({ type: "application/json" }), webhookCheckout);
 // this middleware is for preventing users from polluting queries, i.e it removes the duplicate queries for e.g sort=price & sort= price. so in this case it will only remove duplicate sort.so white list let us run some duplicate queries as we want duration because of the query . ?duration = 5 & duration =9
 app.use(hpp({
   whitelist: [

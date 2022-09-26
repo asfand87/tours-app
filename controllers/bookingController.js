@@ -1,6 +1,7 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { catchAsync } = require("../utils/catchAsync");
 const Tour = require("../models/tours");
+const User = require("../models/user");
 const Booking = require("../models/booking");
 const { deleteOne, updateOne, createOne, getOne, getAll } = require("./handlerFactory");
 
@@ -11,7 +12,7 @@ const checkoutSession = catchAsync(async (req, res, next) => {
   // 2) Create checkout session.
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    success_url: `${req.protocol}://${req.get("host")}/?tour=${tourID}&user=${req.user.id}&price=${tour.price}`,
+    success_url: `${req.protocol}://${req.get("host")}/?my-tours`,
     cancel_url: `${req.protocol}://${req.get("host")}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: tourID,
@@ -33,22 +34,28 @@ const checkoutSession = catchAsync(async (req, res, next) => {
 });
 
 
+const createBookingCheckOut = async session => {
+  const tour = session.client_reference_id;
+  const user = (await User.findOne({ email: session.customer_email })).id;
+  const price = session.line_items[0].amount / 100;
+  await Booking.create({ tour, user, price });
+}
 
-const createBookingCheckout = catchAsync(async (req, res, next) => {
+const webhookCheckout = (req, res, next) => {
+  const signature = req.headers["stripe-signature"];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
 
-  const { tour, user, price } = await req.query;
-  // console.log("this is query object", req.query, " tour user and price is ", tour, user, price);
-  if (!tour || !user || !price) {
-    console.log("no Tour , user or price");
-    return next();
+  } catch (err) {
+    return res.status(400).send(`Webhook error: ${err.message}`);
   }
+  if (event.type === "checkout.session.complete") {
+    createBookingCheckOut(event.data.object)
+  }
+  res.status(200).json({ recieved: "true" });
+};
 
-  const newBooking = { tour: tour, user: user, price: price };
-  // console.log("new booking is ", newBooking);
-  await Booking.create(newBooking);
-  // res.redirect(`${req.protocol}://${req.get("host")}/`)
-  res.redirect(req.originalUrl.split("?")[0]);
-});
 
 const createBooking = createOne(Booking);
 const getBooking = getOne(Booking);
@@ -57,4 +64,4 @@ const updateBooking = updateOne(Booking);
 const deleteBooking = deleteOne(Booking);
 
 
-module.exports = { checkoutSession, createBookingCheckout, createBooking, getBooking, getAllBookings, updateBooking, deleteBooking };
+module.exports = { checkoutSession, createBooking, getBooking, getAllBookings, updateBooking, deleteBooking, webhookCheckout };
