@@ -1,12 +1,13 @@
 const express = require("express");
 
 const router = express.Router();
-const { getOverview, getTour, getLogin, getAccount, updateUserData, getMyTours } = require("../controllers/viewsController");
+const { getOverview, getTour, getLogin, getAccount, updateUserData, getMyTours, alert } = require("../controllers/viewsController");
 // const { createBookingCheckout } = require("../controllers/bookingController");
 const { isLoggedIn, protect } = require("../middleware");
 
 
 
+router.use(alert);
 
 router.get("/", isLoggedIn, getOverview);
 // DETAIL PAGE. 

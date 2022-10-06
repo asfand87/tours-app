@@ -1,4 +1,5 @@
 import "regenerator-runtime/runtime";
+import { showAlert } from "./alerts";
 import { login, logout } from "./login";
 import { displayMap } from "./mapbox";
 import { bookTour } from "./stripe";
@@ -70,5 +71,7 @@ if (bookBtn) {
   })
 }
 
+const alertMessage = document.querySelector("body").dataset.alert;
+if (alert) showAlert("success", alertMessage, 20);
 
 
